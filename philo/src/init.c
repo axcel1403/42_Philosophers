@@ -3,13 +3,11 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmiranda <marvin@42quebec.com>             +#+  +:+       +#+        */
+/*   By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 23:41:05 by jmiranda          #+#    #+#             */
-/*   Updated: 2023/05/04 23:41:21 by jmiranda         ###   ########.fr       */
+/*   Updated: 2023/05/06 21:37:38 by jmiranda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-

@@ -6,11 +6,24 @@
 /*   By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:41:15 by jmiranda          #+#    #+#             */
-/*   Updated: 2023/05/03 00:49:51 by jmiranda         ###   ########.fr       */
+/*   Updated: 2023/05/06 21:37:15 by jmiranda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+void	error(int code)
+{
+	write(2, "Error\n", 6);
+	if (code == 1)
+		printf("Wrong Number Of Arguments\n");
+	if (code == 2)
+		printf("Some Arguments Are Not Digits\n");
+	if (code == 3)
+		printf("Number Of Philosophers Must Be Between 1 And 200\n");
+	if (code == 4)
+		printf("Number Is Greater Than INT_MAX\n");
+}
 
 ssize_t	atoss(const char *str)
 {
@@ -63,39 +76,32 @@ int	valid_args(int argc, char **argv)
 				while (argv[i] != NULL)
 				{
 					if (atoss(argv[i]) > INT_MAX)
-						return (0);
+						return (4);
 					i++;
 				}
-				return (1);
+				return (0);
 			}
-			return (0);
+			return (3);
 		}
-		return (0);
+		return (2);
 	}
-	return (0);
+	return (1);
 }
 
 int	main(int argc, char **argv)
 {
-/*	int code;
+	int	code;
 
 	code = valid_args(argc, argv);
-	if (code == 1)
+	if (code == 0)
 	{
-
-	}
-	else
-		error(code);*/
-	printf("Number of arguments: %d\n", argc);
-	printf("argv[1]: %s\n", argv[1]);
-	if (valid_args(argc, argv))
-	{
-
+		printf("Number of arguments: %d\n", argc);
+		printf("argv[1]: %s\n", argv[1]);
 	}
 	else
 	{
-		write(2, "Error\n", 6);
-		return (1);
+		error(code);
+		return (EXIT_FAILURE);
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 17:05:47 by jmiranda          #+#    #+#             */
-/*   Updated: 2023/05/05 23:54:42 by jmiranda         ###   ########.fr       */
+/*   Updated: 2023/05/06 21:18:09 by jmiranda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,12 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <sys/time.h>
 # include <limits.h>
 
 # define PHILOS_MAX 200;
+
+typedef struct s_table	t_table;
 
 typedef struct s_philo
 {
@@ -50,12 +53,12 @@ typedef struct s_table
 
 typedef enum e_status
 {
-	DIED = 0;
-	EATING = 1;
-	SLEEPING = 2;
-	THINKING = 3;
-	FORK_1 = 4;
-	FORK_2 = 5;
+	DIED = 0,
+	EATING = 1,
+	SLEEPING = 2,
+	THINKING = 3,
+	FORK_1 = 4,
+	FORK_2 = 5,
 }	t_status;
 
 #endif
