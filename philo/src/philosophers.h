@@ -6,7 +6,7 @@
 /*   By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 17:05:47 by jmiranda          #+#    #+#             */
-/*   Updated: 2023/05/07 01:14:58 by jmiranda         ###   ########.fr       */
+/*   Updated: 2023/05/07 21:28:34 by jmiranda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,11 @@ typedef struct s_table	t_table;
 typedef struct s_philo
 {
 	pthread_t		thread;
-	int				id;
-	int				fork[2];
-	int				nb_ate;
 	pthread_mutex_t	meal_time_mutex;
+	int				id;
+	int				nb_ate;
+	int				fork[2];
+	
 	time_t			last_meal;
 	t_table			*table;
 }	t_philo;
@@ -41,12 +42,13 @@ typedef struct s_table
 	time_t			time_to_die;
 	time_t			time_to_eat;
 	time_t			time_to_sleep;
-	int				must_eat_count;
-	pthread_mutex_t	*fork_mutex;
+	int				nb_must_eat;
+	pthread_mutex_t	*philo_forks_mutex;
 	pthread_mutex_t	philo_stop_mutex;
 	pthread_mutex_t	philo_write_mutex;
-	time_t			start_time;
 	int				philo_stop_flag;
+	
+	time_t			synchro_start_time;
 	pthread_t		reaper;
 	t_philo			**philos;
 }	t_table;
