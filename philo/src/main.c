@@ -6,13 +6,28 @@
 /*   By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:41:15 by jmiranda          #+#    #+#             */
-/*   Updated: 2023/05/14 01:28:23 by jmiranda         ###   ########.fr       */
+/*   Updated: 2023/05/14 01:49:42 by jmiranda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	error(int code)
+// TODO clear_table&destroy_mutexes
+
+void	clear_all(t_table *table)
+{
+	int	i;
+
+	i = 0;
+	while (i < table->nb_philos)
+		pthread_join(table->philos[i]->thread, NULL);
+	if (table->nb_philos > 1)
+		pthread_join(table->reaper, NULL);
+//	clear_table(table);
+//	destroy_mutexes(table);
+}
+
+void	error(int code, t_table *table)
 {
 	write(2, "Error\n", 6);
 	if (code == 1)
@@ -25,8 +40,8 @@ void	error(int code)
 		printf("Number Is Greater Than INT_MAX\n");
 //	if (code == -1)
 //	{
-//		clear_table();
-//		destroy_mutexes();
+//		clear_table(table);
+//		destroy_mutexes(table);
 //	}
 }
 
@@ -407,18 +422,18 @@ int	main(int argc, char **argv)
 	code = valid_args(argc, argv);
 	if (code == 0)
 	{
-		printf("Number of arguments: %d\n", argc);
 		table = NULL;
 		if (!init_all(argc, argv, table))
 		{
-			error(-1);
+			error(-1, table);
 			return (EXIT_FAILURE);
 		}
 		philos_threads_routine_reaper(table);
+		clear_all(table);
 	}
 	else
 	{
-		error(code);
+		error(code, NULL);
 		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
