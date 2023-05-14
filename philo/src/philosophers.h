@@ -6,7 +6,7 @@
 /*   By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 17:05:47 by jmiranda          #+#    #+#             */
-/*   Updated: 2023/05/12 23:24:34 by jmiranda         ###   ########.fr       */
+/*   Updated: 2023/05/14 00:26:34 by jmiranda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ typedef struct s_table
 	pthread_mutex_t	write_mutex;
 	int				stop_flag;
 	time_t			start_time;
-	
 	pthread_t		reaper;
 	t_philo			**philos;
 }	t_table;
