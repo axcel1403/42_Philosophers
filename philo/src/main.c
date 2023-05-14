@@ -6,7 +6,7 @@
 /*   By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:41:15 by jmiranda          #+#    #+#             */
-/*   Updated: 2023/05/12 23:52:27 by jmiranda         ###   ########.fr       */
+/*   Updated: 2023/05/13 22:53:54 by jmiranda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ time_t	get_time_in_ms(void)
 {
 	struct timeval	tv;
 
-	gettimeoftheday(&tv, NULL);
+	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
@@ -44,14 +44,36 @@ void	print_status(t_philo *philo, char *state)
 		philo->id + 1, state);
 }
 
+int	philo_stop(t_table *table)
+{
+	pthread_mutex_lock(&table->stop_mutex);
+	if (table->stop_flag)
+		return (1);
+	pthread_mutex_unlock(&table->stop_mutex);
+	return (0);
+}
+
+void	philo_sleeping(t_table *table, time_t sleep_time)
+{
+	time_t	wake_up;
+
+	wake_up = get_time_in_ms() + sleep_time;
+	while (get_time_in_ms() < wake_up)
+	{
+		if (philo_stop(table))
+			return ;
+		usleep(100);
+	}
+}
+
 void	write_status(t_philo *philo, int reaper_report, t_status status)
 {
 	pthread_mutex_lock(&philo->table->write_mutex);
-/* TO DO if (philo_stop(philo->table) && reaper_report == 0)
+	if (philo_stop(philo->table) && reaper_report == 0)
 	{
 		pthread_mutex_unlock(&philo->table->write_mutex);
 		return ;
-	}*/
+	}
 	if (status == DIED)
 		print_status(philo, "died");
 	else if (status == EATING)
@@ -75,14 +97,42 @@ void	*one_philo(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->table->forks_mutex[philo->fork[0]]);
 	write_status(philo, 0, FORK_1);
-//	TO DO philo_sleeping(philo->table, philo->table->time_to_die);
+	philo_sleeping(philo->table, philo->table->time_to_die);
 	write_status(philo, 0, DIED);
-	pthread_mutex_unlock(&philo->table->forks_mutex[philo->forks[0]]);
+	pthread_mutex_unlock(&philo->table->forks_mutex[philo->fork[0]]);
 	return (NULL);
 }
 
-void	*routine(t_philo *philo)
+void	eating_sleeping_routine(t_philo *philo)
 {
+	
+}
+
+void	thinking_routine(t_philo *philo, int silent)
+{
+	time_t	time_to_think;
+
+	pthread_mutex_lock(&philo->meal_time_mutex);
+	time_to_think = (philo->table->time_to_die
+			- (get_time_in_ms() - philo->last_meal)
+			- philo->table->time_to_eat) / 2;
+	pthread_mutex_unlock(&philo->meal_time_mutex);
+	if (time_to_think < 0)
+		time_to_think = 0;
+	if (time_to_think == 0 && silent == 1)
+		time_to_think = 1;
+	if (time_to_think > 600)
+		time_to_think = 200;
+	if (silent == 0)
+		write_status(philo, 0, THINKING);
+	philo_sleeping(philo->table, time_to_think);
+}
+
+void	*routine(void *arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)arg;
 	if (philo->table->time_to_die == 0 || philo->table->nb_must_eat == 0)
 		return (NULL);
 	pthread_mutex_lock(&philo->meal_time_mutex);
@@ -91,6 +141,14 @@ void	*routine(t_philo *philo)
 	sync_threads_start_time(philo->table->start_time);
 	if (philo->table->nb_philos == 1)
 		return (one_philo(philo));
+	else if (philo->id % 2)
+		thinking_routine(philo, 1);
+	while (philo_stop(philo->table) == 0)
+	{
+		eating_sleeping_routine(philo);
+		thinking_routine(philo, 0);
+	}
+	return (NULL);
 }
 
 void	create_philos_threads_and_routine(t_table *table)
