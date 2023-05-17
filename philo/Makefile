@@ -6,7 +6,7 @@
 #    By: jmiranda <marvin@42quebec.com>             +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/18 16:42:57 by jmiranda          #+#    #+#              #
-#    Updated: 2023/04/18 17:09:27 by jmiranda         ###   ########.fr        #
+#    Updated: 2023/05/17 00:57:07 by jmiranda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ OBJS    = ${SRCS:.c=.o}
 
 CC      = gcc
 
-CFLAGS  = -Wall -Wextra -Werror -Iinc
+CFLAGS  = -Wall -Wextra -Werror -Iinc -pthread
 
 all     : ${NAME}
 

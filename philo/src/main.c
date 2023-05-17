@@ -6,7 +6,7 @@
 /*   By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:41:15 by jmiranda          #+#    #+#             */
-/*   Updated: 2023/05/14 01:49:42 by jmiranda         ###   ########.fr       */
+/*   Updated: 2023/05/17 00:55:08 by jmiranda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	clear_all(t_table *table)
 
 void	error(int code, t_table *table)
 {
+	(void) table;
 	write(2, "Error\n", 6);
 	if (code == 1)
 		printf("Wrong Number Of Arguments\n");
@@ -255,6 +256,7 @@ void	philos_threads_routine_reaper(t_table *table)
 	int	i;
 
 	i = 0;
+	write(1, "test", 4);
 	while (i < table->nb_philos)
 	{
 		pthread_create(&table->philos[i]->thread, NULL, &routine,
@@ -429,7 +431,7 @@ int	main(int argc, char **argv)
 			return (EXIT_FAILURE);
 		}
 		philos_threads_routine_reaper(table);
-		clear_all(table);
+//		clear_all(table);
 	}
 	else
 	{
