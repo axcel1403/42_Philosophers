@@ -6,13 +6,49 @@
 /*   By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:41:15 by jmiranda          #+#    #+#             */
-/*   Updated: 2023/05/17 00:55:08 by jmiranda         ###   ########.fr       */
+/*   Updated: 2023/05/17 19:05:02 by jmiranda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-// TODO clear_table&destroy_mutexes
+void	clear_table(t_table *table)
+{
+	int	i;
+
+	if (!table)
+		return ;
+	if (table->forks_mutex != NULL)
+		free(table->forks_mutex);
+	if (table->philos != NULL)
+	{
+		i = 0;
+		while (i < table->nb_philos)
+		{
+			if (table->philos[i] != NULL)
+				free(table->philos[i]);
+			i++;
+		}
+		free(table->philos);
+	}
+	free(table);
+	return ;
+}
+
+void	destroy_mutexes(t_table *table)
+{
+	int	i;
+
+	i = 0;
+	while (i < table->nb_philos)
+	{
+		pthread_mutex_destroy(&table->forks_mutex[i]);
+		pthread_mutex_destroy(&table->philos[i]->meal_time_mutex);
+		i++;
+	}
+	pthread_mutex_destroy(&table->write_mutex);
+	pthread_mutex_destroy(&table->stop_mutex);
+}
 
 void	clear_all(t_table *table)
 {
@@ -23,8 +59,8 @@ void	clear_all(t_table *table)
 		pthread_join(table->philos[i]->thread, NULL);
 	if (table->nb_philos > 1)
 		pthread_join(table->reaper, NULL);
-//	clear_table(table);
-//	destroy_mutexes(table);
+	destroy_mutexes(table);
+	clear_table(table);
 }
 
 void	error(int code, t_table *table)
@@ -39,11 +75,11 @@ void	error(int code, t_table *table)
 		printf("Number Of Philosophers Must Be Between 1 And 200\n");
 	if (code == 4)
 		printf("Number Is Greater Than INT_MAX\n");
-//	if (code == -1)
-//	{
-//		clear_table(table);
-//		destroy_mutexes(table);
-//	}
+	if (code == -1)
+	{
+		destroy_mutexes(table);
+		clear_table(table);
+	}
 }
 
 time_t	get_time_in_ms(void)
@@ -256,7 +292,6 @@ void	philos_threads_routine_reaper(t_table *table)
 	int	i;
 
 	i = 0;
-	write(1, "test", 4);
 	while (i < table->nb_philos)
 	{
 		pthread_create(&table->philos[i]->thread, NULL, &routine,
@@ -285,23 +320,23 @@ ssize_t	atoss(const char *str)
 	return (res);
 }
 
-int	init_mutexes(t_table *table)
+int	init_mutexes(t_table **table)
 {
 	int				i;
 	pthread_mutex_t	*forks;
 
-	forks = malloc(sizeof(pthread_mutex_t) * table->nb_philos);
+	forks = malloc(sizeof(pthread_mutex_t) * (*table)->nb_philos);
 	if (!forks)
 		return (0);
 	i = 0;
-	while (i < table->nb_philos)
+	while (i < (*table)->nb_philos)
 	{
 		pthread_mutex_init(&forks[i], NULL);
 		i++;
 	}
-	table->forks_mutex = forks;
-	pthread_mutex_init(&table->stop_mutex, NULL);
-	pthread_mutex_init(&table->write_mutex, NULL);
+	(*table)->forks_mutex = forks;
+	pthread_mutex_init(&(*table)->stop_mutex, NULL);
+	pthread_mutex_init(&(*table)->write_mutex, NULL);
 	return (1);
 }
 
@@ -354,18 +389,19 @@ t_table	*init_table(int argc, char **argv)
 	return (table);
 }
 
-int	init_all(int argc, char **argv, t_table *table)
+int	init_all(int argc, char **argv, t_table **table)
 {
-	table = init_table(argc, argv);
-	if (!table)
+	(*table) = init_table(argc, argv);
+	if (!(*table))
 		return (0);
-	table->philos = init_philos(table);
-	if (!table->philos)
+	(*table)->philos = init_philos(*table);
+	if (!(*table)->philos)
 		return (0);
 	if (!init_mutexes(table))
 		return (0);
-	table->stop_flag = 0;
-	table->start_time = get_time_in_ms();
+	(*table)->stop_flag = 0;
+	(*table)->start_time = get_time_in_ms();
+	printf("%d\n", (*table)->nb_philos);
 	return (1);
 }
 
@@ -425,13 +461,14 @@ int	main(int argc, char **argv)
 	if (code == 0)
 	{
 		table = NULL;
-		if (!init_all(argc, argv, table))
+		if (!init_all(argc, argv, &table))
 		{
 			error(-1, table);
 			return (EXIT_FAILURE);
 		}
+		printf("%d\n", table->nb_philos);
 		philos_threads_routine_reaper(table);
-//		clear_all(table);
+		clear_all(table);
 	}
 	else
 	{
