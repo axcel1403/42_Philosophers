@@ -6,7 +6,7 @@
 /*   By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:41:15 by jmiranda          #+#    #+#             */
-/*   Updated: 2023/05/17 19:05:02 by jmiranda         ###   ########.fr       */
+/*   Updated: 2023/05/17 20:46:44 by jmiranda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,10 @@ void	clear_all(t_table *table)
 
 	i = 0;
 	while (i < table->nb_philos)
+	{
 		pthread_join(table->philos[i]->thread, NULL);
+		i++;
+	}
 	if (table->nb_philos > 1)
 		pthread_join(table->reaper, NULL);
 	destroy_mutexes(table);
@@ -100,7 +103,10 @@ int	philo_stop(t_table *table)
 {
 	pthread_mutex_lock(&table->stop_mutex);
 	if (table->stop_flag)
+	{
+		pthread_mutex_unlock(&table->stop_mutex);
 		return (1);
+	}
 	pthread_mutex_unlock(&table->stop_mutex);
 	return (0);
 }
@@ -401,7 +407,6 @@ int	init_all(int argc, char **argv, t_table **table)
 		return (0);
 	(*table)->stop_flag = 0;
 	(*table)->start_time = get_time_in_ms();
-	printf("%d\n", (*table)->nb_philos);
 	return (1);
 }
 
@@ -466,7 +471,6 @@ int	main(int argc, char **argv)
 			error(-1, table);
 			return (EXIT_FAILURE);
 		}
-		printf("%d\n", table->nb_philos);
 		philos_threads_routine_reaper(table);
 		clear_all(table);
 	}
