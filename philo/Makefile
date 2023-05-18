@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jmiranda <marvin@42quebec.com>             +#+  +:+       +#+         #
+#    By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/18 16:42:57 by jmiranda          #+#    #+#              #
-#    Updated: 2023/05/17 21:37:27 by jmiranda         ###   ########.fr        #
+#    Updated: 2023/05/17 22:19:46 by jmiranda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,13 +14,14 @@ VPATH   = src/
 
 NAME    = philo
 
-SRCS    = main.c \
+SRCS    = error_and_clear.c initialization.c main.c one_philo.c \
+		  reaper_check.c routine.c time_and_print.c \
 
 OBJS    = ${SRCS:.c=.o}
 
 CC      = gcc
 
-CFLAGS  = -Wall -Wextra -Werror -pthread
+CFLAGS  = -Wall -Wextra -Werror -Iinc -pthread
 
 all     : ${NAME}
 
@@ -36,7 +37,7 @@ clean   :
 				rm -f ${OBJS}
 
 fclean  : clean
-				rm -f ${OBJS} ${NAME}
+				rm -f ${NAME}
 
 re      : fclean all
 
