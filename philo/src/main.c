@@ -6,7 +6,7 @@
 /*   By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 16:41:15 by jmiranda          #+#    #+#             */
-/*   Updated: 2023/05/18 01:20:35 by jmiranda         ###   ########.fr       */
+/*   Updated: 2023/07/12 13:41:38 by jmiranda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	is_digit(char **argv)
 		while (argv[i][j])
 		{
 			if (argv[i][j] >= '0' && argv[i][j] <= '9')
-					j++;
+				j++;
 			else
 				return (0);
 		}

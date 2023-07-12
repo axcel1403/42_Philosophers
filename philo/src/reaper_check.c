@@ -6,7 +6,7 @@
 /*   By: jmiranda <jmiranda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 21:56:59 by jmiranda          #+#    #+#             */
-/*   Updated: 2023/05/18 01:20:24 by jmiranda         ###   ########.fr       */
+/*   Updated: 2023/07/12 13:41:41 by jmiranda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	check_stop_all(t_table *table)
 			return (1);
 		if (table->nb_must_eat != -1 && table->philos[i]->nb_ate
 			< table->nb_must_eat)
-				all_ate_enough = 0;
+			all_ate_enough = 0;
 		pthread_mutex_unlock(&table->philos[i]->meal_time_mutex);
 		i++;
 	}
