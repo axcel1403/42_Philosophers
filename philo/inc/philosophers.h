@@ -20,7 +20,7 @@
 # include <sys/time.h>
 # include <limits.h>
 
-# define PHILOS_MAX 200;
+# define PHILOS_MAX 200
 
 typedef struct s_table	t_table;
 
