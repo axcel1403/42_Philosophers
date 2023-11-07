@@ -2,7 +2,6 @@
 ### Description
 
 *Eat, Sleep, Think, Repeat.* This project is about learning how threads work by precisely timing a group of philosophers on when to pick up forks and eat, sleep and think without dying from hunger.
-
 ### Summary
 
 In this project, we learn the basics of threading a process.
